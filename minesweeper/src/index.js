@@ -233,7 +233,7 @@ setInterval(updateGameDuration, 1000);
 drawPlayField();
 
 const scriptTag = document.querySelector(
-  'script[src=""./src/index.js""]'
+  'script[src="./src/index.js"]'
 );
 document.body.appendChild(scriptTag);
 
