@@ -5,7 +5,7 @@ import {
   } from "./create.js";
 
 const body = document.querySelector("body");
-const navLink = document.querySelectorAll(".nav-list-item");
+const navLink = document.querySelectorAll(".nav-link-item");
 
 menuBurger.addEventListener("click", () => {
   menuBurger.classList.toggle("-active");
