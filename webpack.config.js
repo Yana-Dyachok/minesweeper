@@ -1,12 +1,14 @@
-module.export={
-    entry:"./src/index.js",
+const path = require('path');
+
+module.exports = {
+    entry: "./src/index.js",
     output: {
-        path: path.resolve(__dirname,"dist"),
+        path: path.resolve(__dirname, "dist"),
         filename: "main.js"
     },
     mode: "development",
     devServer: {
         compress: true,
-        port:3000,
+        port: 3000,
     },
-}
+};
