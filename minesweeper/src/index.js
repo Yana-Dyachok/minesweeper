@@ -53,7 +53,7 @@ function changeSize(n, m) {
 function getLevel(selectedOption) {
   if (selectedOption === "easy") changeSize(10, 10);
   if (selectedOption === "medium") changeSize(15, 40);
-  if (selectedOption === "hard") changeSize(20, 60);
+  if (selectedOption === "hard") changeSize(25, 70);
   minesCount.placeholder = countMines;
   pointBombs.innerText = countMines;
 }
