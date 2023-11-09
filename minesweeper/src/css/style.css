@@ -319,50 +319,7 @@ main {
 }
 
 .my-mine {
-  position: relative;
-}
-.my-mine::before {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 0;
-  bottom: 40%;
-  border-bottom: 1rem solid #16a128;
-  border-right: 1rem solid transparent;
-}
-.my-mine::after {
-  content: "";
-  position: absolute;
-  top: 55%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(90deg);
-  width: 50%;
-  height: 0.2rem;
-  background-color: #0c3219;
-}
-
-.flag {
-  position: relative;
-  width: 3.5rem;
-}
-.flag::before {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 0;
-  bottom: 30%;
-  border-bottom: 1rem solid #16a128;
-  border-right: 1rem solid transparent;
-}
-.flag::after {
-  content: "";
-  position: absolute;
-  top: 0%;
-  left: 0%;
-  transform: translate(-50%, -50%) rotate(90deg);
-  width: 50%;
-  height: 0.2rem;
-  background-color: #0c3219;
+  background: url(../assets/img/Flag-green256_25053.png) center/cover no-repeat;
 }
 
 .text-footer {
@@ -386,7 +343,7 @@ main {
 }
 @media (max-width: 490px) {
   .table-boxes {
-    width: 20rem;
+    width: 22rem;
     height: 20rem;
   }
   .rows-boxes {

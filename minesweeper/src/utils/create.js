@@ -103,6 +103,7 @@ const clickPoints= document.createElement("div");
 clickPoints.setAttribute("class", "click-points");
 const pointFlag= document.createElement("div");
 pointFlag.setAttribute("class", "flag");
+pointFlag.innerHTML='<img src="./assets/img/Flag-green256_25053.png" alt="flag" width="30"  height="30">';
 clickPoints.append(pointFlag);
 export const pointBombs= document.createElement("div");
 pointBombs.setAttribute("class", "point-bombs change");
