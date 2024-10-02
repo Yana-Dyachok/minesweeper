@@ -1,9 +1,10 @@
-import wrapperBlock from "./utils/create.js";
-import "./utils/burger.js"
+import "./utils/create.js";
 import {
   playingField,
   pointBombs,
+  pointClicks,
   textFooter,
+  level,
   smile,
   date,
   mouth,
@@ -13,30 +14,27 @@ import {
   audioWin,
   audioMyMine,
   audiOpened,
-  resultsContainer
+  mike,
+  minesCount,
+  themeToggle,
 } from "./utils/create.js";
 
-smile.addEventListener("click", function () {
-  localStorage.clear();
-  location.reload();
-});
-
-let startDate = new Date();
+let countMines = parseInt(minesCount.value) || 10;
+let row = 10;
+let column = 10;
+let playField = [];
+let countOpened = 0;
+let flag = false;
+let minesLeft = countMines;
+let countClicks = 0;
+pointBombs.innerText = minesLeft;
+let isFirstClickDone = false;
 let gameOver = false;
-let firstClick = false;
-
-function updateGameDuration() {
-  if (gameOver) return;
-  if (flag) {
-    let currentDate = new Date();
-    let timeDiff = Math.floor((currentDate - startDate) / 1000);
-    let minutes = Math.floor(timeDiff / 60);
-    let seconds = timeDiff % 60;
-    date.textContent = `${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}`;
-  }
-}
+let startDate;
+let selectedOption = localStorage.getItem("level") || "easy";
+let gameDuration = 0;
+let themeFlag = false;
+let mikeFlag = true;
 
 class Mine {
   constructor() {
@@ -46,16 +44,62 @@ class Mine {
   }
 }
 
-let row = 10;
-let column = 10;
-let playField = [];
-let countMine = 10;
-let countOpened = 0;
-let flag = false;
-let minesLeft = countMine;
-pointBombs.innerHTML = minesLeft;
+function changeSize(n, m) {
+  row = n;
+  column = n;
+  countMines = m;
+}
 
-function createPlayField() {
+function getLevel(selectedOption) {
+  if (selectedOption === "easy") changeSize(10, 10);
+  if (selectedOption === "medium") changeSize(15, 40);
+  if (selectedOption === "hard") changeSize(25, 70);
+  minesCount.placeholder = countMines;
+  pointBombs.innerText = countMines;
+}
+
+function getSelectedOption(selectedOption) {
+  const childrenArray = Array.from(level.children);
+  childrenArray.forEach((el) => {
+  });
+}
+
+level.addEventListener("change", function () {
+  let option = level.options[level.selectedIndex];
+  selectedOption = option.textContent;
+  setLocalStorage();
+  getLevel(selectedOption);
+  // let  intervalId =setInterval(updateGameDuration, 1000);
+  // clearInterval(intervalId);
+  startGame();
+});
+
+minesCount.addEventListener("change", function () {
+  countMines = parseInt(minesCount.value);
+  minesCount.placeholder = countMines;
+  pointBombs.innerText = countMines;
+  startGame();
+});
+
+function updateGameDuration() {
+  if (gameOver) {
+    gameDuration = date.textContent;
+    //tenGameDuration.push(gameDuration);
+    setLocalStorage();
+    return;
+  }
+  if (flag) {
+    let currentDate = new Date();
+    let timeDiff = ~~((currentDate - startDate) / 1000);
+    let minutes = ~~(timeDiff / 60);
+    let seconds = timeDiff % 60;
+    date.textContent = `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  }
+}
+
+function createPrimaryPlayField() {
   playField = [];
   for (let i = 0; i < row; i++) {
     let getCells = [];
@@ -64,14 +108,50 @@ function createPlayField() {
     }
     playField.push(getCells);
   }
-  for (let i = 0; i < countMine; ) {
-    let x = Math.floor(Math.random() * row);
-    let y = Math.floor(Math.random() * column);
-    if (playField[x][y].isMine == false) {
-      playField[x][y].isMine = true;
-      i++;
+  isFirstClickDone = false;
+}
+
+function drawPlayField() {
+  playingField.innerHTML = "";
+  const table = document.createElement("table");
+  table.setAttribute("class", "table-boxes");
+  for (let i = 0; i < column; i++) {
+    const tr = document.createElement("tr");
+    for (let j = 0; j < row; j++) {
+      const td = document.createElement("td");
+      td.setAttribute("class", "rows-boxes change");
+      if (themeToggle.classList.contains("dark")) td.classList.add("dark");
+      tr.appendChild(td);
+    }
+    table.appendChild(tr);
+  }
+  playingField.appendChild(table);
+}
+
+function drawMine() {
+  const table = document.querySelector(".table-boxes");
+  for (let x = 0; x < row; x++) {
+    for (let y = 0; y < column; y++) {
+      let td = table.rows[y].children[x];
+      if (playField[x][y].isMine) {
+        td.classList.add("mine");
+      }
     }
   }
+}
+
+function placeMines(ex, ey) {
+  for (let i = 0; i < countMines; ) {
+    let x = ~~(Math.random() * row);
+    let y = ~~(Math.random() * column);
+    if (x !== ex && y !== ey) {
+      if (playField[x][y].isMine == false) {
+        playField[x][y].isMine = true;
+        i++;
+      }
+    }
+  }
+  countAllCells();
 }
 
 function countCellsNear(x, y) {
@@ -97,57 +177,63 @@ function countAllCells() {
   }
 }
 
-function newGame() {
-  countOpened = 0;
-  createPlayField();
-  countAllCells();
-  textFooter.textContent = "Good Luck!!!";
-}
-
-newGame();
-
-function drawPlayField() {
-  playingField.innerHTML = "";
-  const table = document.createElement("table");
-  table.setAttribute("class", "table-boxes");
-  for (let i = 0; i < column; i++) {
-    const tr = document.createElement("tr");
-    for (let j = 0; j < row; j++) {
-      const td = document.createElement("td");
-      td.setAttribute("class", "rows-boxes");
-      if (playField[j][i].nearMine == 1) td.classList.add("one");
-      if (playField[j][i].nearMine == 2) td.classList.add("two");
-      if (playField[j][i].nearMine == 3) td.classList.add("three");
-      if (playField[j][i].nearMine == 4) td.classList.add("four");
-      if (playField[j][i].nearMine == 5) td.classList.add("five");
-      tr.appendChild(td);
+function drawNumbers() {
+  const td = document.querySelectorAll("td");
+  td.forEach((cell) => {
+    switch (cell.textContent) {
+      case "1":
+        cell.classList.add("one");
+        break;
+      case "2":
+        cell.classList.add("two");
+        break;
+      case "3":
+        cell.classList.add("three");
+        break;
+      case "4":
+        cell.classList.add("four");
+        break;
+      case "5":
+        cell.classList.add("five");
+        break;
     }
-    table.appendChild(tr);
-  }
-  playingField.appendChild(table);
+  });
 }
-
-drawPlayField();
-
-function drawMine() {
-  const table = document.querySelector(".table-boxes");
-  for (let x = 0; x < row; x++) {
-    for (let y = 0; y < column; y++) {
-      let td = table.rows[y].children[x];
-      if (playField[x][y].isMine) {
-        td.classList.add("mine");
-      }
-    }
-  }
-}
-drawMine();
 
 function openAllCells(event) {
   if (gameOver) return;
   let x = event.target.cellIndex;
   let y = event.target.parentNode.rowIndex;
   recurseOpenCells(x, y);
+  drawNumbers();
 }
+
+function audioPlay(elem) {
+  if (!mike.classList.contains("off")) {
+    elem.play();
+  } else {
+    elem.pause();
+  }
+}
+
+function toggleMute() {
+  if (mike.classList.contains("off")) {
+    audioMyMine.pause();
+    audioLost.pause();
+    audiOpened.pause();
+    audioWin.pause();
+  } else {
+    if (textFooter.textContent === "You lost!!!") audioLost.play();
+    if (textFooter.textContent === "Greeting!!! You win!!!") audioWin.play();
+  }
+}
+
+mike.addEventListener("click", () => {
+  mike.classList.toggle("off");
+  toggleMute();
+  mikeFlag = !mike.classList.contains("off") ? true : false;
+  setLocalStorage();
+});
 
 function recurseOpenCells(x, y) {
   const table = document.querySelector(".table-boxes");
@@ -160,7 +246,7 @@ function recurseOpenCells(x, y) {
     gameOver = true;
     flag = false;
     mouth.style.animation = "mouth 1s infinite";
-    audioLost.play();
+    audioPlay(audioLost);
   } else {
     if (playField[x][y].nearMine == 0) td.innerHTML = "";
     else {
@@ -168,14 +254,14 @@ function recurseOpenCells(x, y) {
     }
     playField[x][y].isOpen = true;
     td.classList.add("opened");
-    audiOpened.play();
+    audioPlay(audiOpened);
     countOpened++;
-    if (row * column - countMine == countOpened) {
+    if (row * column - countMines == countOpened) {
       textFooter.textContent = "Greeting!!! You win!!!";
       flag = false;
       gameOver = true;
       drawMine();
-      audioWin.play();
+      audioPlay(audioWin);
       eyeLeft.style.animation = "eye 1s infinite";
       eyeRight.style.animation = "eye 1s infinite";
       mouth.style.animation = "mouth 1s infinite";
@@ -197,10 +283,21 @@ function recurseOpenCells(x, y) {
 }
 
 playingField.addEventListener("click", function (event) {
+  pointClicks.textContent = ++countClicks;
   flag = true;
-  firstClick = true;
-  if (event.target.matches("td") && !event.target.matches(".my-mine")) {
+  if (!isFirstClickDone) {
+    startDate = new Date();
+    setInterval(updateGameDuration, 1000);
+    event.target.classList.add("opened");
+    let x = event.target.cellIndex;
+    let y = event.target.parentNode.rowIndex;
+    placeMines(x, y);
     openAllCells(event);
+    isFirstClickDone = true;
+  } else {
+    if (event.target.matches("td") && !event.target.matches(".my-mine")) {
+      openAllCells(event);
+    }
   }
 });
 
@@ -215,25 +312,106 @@ function pointMyMine(event) {
     box.classList.contains("my-mine")
   );
 
-  minesLeft = countMine - myMineCells.length;
-  pointBombs.innerHTML = minesLeft;
+  minesLeft = countMines - myMineCells.length;
+  pointBombs.innerText = minesLeft;
 }
 
 playingField.addEventListener("contextmenu", function (event) {
   flag = true;
   event.preventDefault();
-  audioMyMine.play();
+  audioPlay(audioMyMine);
   if (event.target.matches("td")) {
     pointMyMine(event);
   }
 });
 
-newGame();
-setInterval(updateGameDuration, 1000);
-drawPlayField();
+function startGame() {
+  countOpened = 0;
+  createPrimaryPlayField();
+  drawPlayField();
+  textFooter.textContent = "Good Luck!!!";
+}
 
-const scriptTag = document.querySelector(
-  'script[src="./src/index.js"]'
-);
+startGame();
+
+// theme toggle-----------------------------------------------------------------------------------------------------------------------------
+function getThemeToggle() {
+  themeToggle.addEventListener("click", () => {
+    const themeToggleElements = document.querySelectorAll(".change");
+    themeToggleElements.forEach((btn) => btn.classList.toggle("dark"));
+    themeFlag = themeToggle.classList.contains("dark") ? true : false;
+    setLocalStorage();
+  });
+}
+
+getThemeToggle();
+const scriptTag = document.querySelector('script[src="./index.js"]');
 document.body.appendChild(scriptTag);
 
+//reload game-------------------------------------------------------------------------------------------------------------------------
+smile.addEventListener("click", function () {
+  localStorage.clear();
+  location.reload();
+});
+window.getComputedStyle(mouth);
+
+//save in localStorage-----------------------------------------------------------------------------------------------------------------
+let tenGameDuration = [];
+function setLocalStorage() {
+  localStorage.setItem("mike", mikeFlag);
+  localStorage.setItem("theme", themeFlag);
+  localStorage.setItem("level", selectedOption);
+  localStorage.setItem("gameDuration", gameDuration);
+  localStorage.setItem("duration", JSON.stringify(tenGameDuration));
+}
+
+function getLocalStorage() {
+  if (localStorage.getItem("gameDuration")) {
+    gameDuration = localStorage.getItem("gameDuration");
+    tenGameDuration.push(gameDuration);
+    console.log(tenGameDuration );
+    localStorage.setItem("duration", JSON.stringify(tenGameDuration));
+  }
+
+  if (localStorage.getItem("mike")) {
+    mikeFlag = localStorage.getItem("mike");
+    if (mikeFlag === "false") {
+      mike.classList.add("off");
+    } else {
+      mike.classList.remove("off");
+    }
+    toggleMute();
+  }
+
+  if (localStorage.getItem("theme")) {
+    themeFlag = localStorage.getItem("theme");
+    const themeToggleElements = document.querySelectorAll(".change");
+    if (themeFlag === "true") {
+      themeToggleElements.forEach((btn) => btn.classList.add("dark"));
+    } else {
+      themeToggleElements.forEach((btn) => btn.classList.remove("dark"));
+    }
+  }
+
+  if (localStorage.getItem("level")) {
+    let selected = localStorage.getItem("level");
+    getLevel(selected);
+    getSelectedOption(selectedOption);
+    startGame();
+  }
+
+  if (localStorage.getItem("duration")) {
+    const durationJSON = localStorage.getItem("duration");
+    tenGameDuration = JSON.parse(durationJSON);
+  }
+
+}
+
+function getGameDuration(data) {
+  tenGameDuration.push(data);
+  localStorage.setItem("duration", JSON.stringify(tenGameDuration));
+  console.log(tenGameDuration );
+}
+
+window.addEventListener("load", getLocalStorage);
+window.addEventListener("beforeunload", setLocalStorage);
