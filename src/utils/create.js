@@ -150,10 +150,12 @@ const footer= document.createElement("footer");
 footer.setAttribute("class", "footer");
 export const textFooter = document.createElement("h3");
 textFooter.setAttribute("class", "text-footer change");
+export const gameDurationStat = document.createElement("div");
 footer.append(textFooter);
+footer.append(gameDurationStat);
 wrapperBlock.append(footer);
 export default wrapperBlock;
 
-export const overlay= document.createElement("div");
+export const overlay= document.createElement("ul");
 overlay.setAttribute("class", "overlay");
 document.body.append(overlay);

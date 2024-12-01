@@ -1,4 +1,4 @@
-import "./utils/create.js";
+import './utils/create.js';
 import {
   playingField,
   pointBombs,
@@ -17,7 +17,8 @@ import {
   mike,
   minesCount,
   themeToggle,
-} from "./utils/create.js";
+  gameDurationStat
+} from './utils/create.js';
 
 let countMines = parseInt(minesCount.value) || 10;
 let row = 10;
@@ -31,7 +32,7 @@ pointBombs.innerText = minesLeft;
 let isFirstClickDone = false;
 let gameOver = false;
 let startDate;
-let selectedOption = localStorage.getItem("level") || "easy";
+let selectedOption = localStorage.getItem('level') || 'easy';
 let gameDuration = 0;
 let themeFlag = false;
 let mikeFlag = true;
@@ -51,9 +52,9 @@ function changeSize(n, m) {
 }
 
 function getLevel(selectedOption) {
-  if (selectedOption === "easy") changeSize(10, 10);
-  if (selectedOption === "medium") changeSize(15, 40);
-  if (selectedOption === "hard") changeSize(25, 70);
+  if (selectedOption === 'easy') changeSize(10, 10);
+  if (selectedOption === 'medium') changeSize(15, 40);
+  if (selectedOption === 'hard') changeSize(25, 70);
   minesCount.placeholder = countMines;
   pointBombs.innerText = countMines;
 }
@@ -61,20 +62,19 @@ function getLevel(selectedOption) {
 function getSelectedOption(selectedOption) {
   const childrenArray = Array.from(level.children);
   childrenArray.forEach((el) => {
+    if (el.textContent === selectedOption) el.selected = true;
   });
 }
 
-level.addEventListener("change", function () {
+level.addEventListener('change', function () {
   let option = level.options[level.selectedIndex];
   selectedOption = option.textContent;
   setLocalStorage();
   getLevel(selectedOption);
-  // let  intervalId =setInterval(updateGameDuration, 1000);
-  // clearInterval(intervalId);
   startGame();
 });
 
-minesCount.addEventListener("change", function () {
+minesCount.addEventListener('change', function () {
   countMines = parseInt(minesCount.value);
   minesCount.placeholder = countMines;
   pointBombs.innerText = countMines;
@@ -83,9 +83,7 @@ minesCount.addEventListener("change", function () {
 
 function updateGameDuration() {
   if (gameOver) {
-    gameDuration = date.textContent;
-    //tenGameDuration.push(gameDuration);
-    setLocalStorage();
+    gameDuration =  date.textContent;
     return;
   }
   if (flag) {
@@ -93,9 +91,9 @@ function updateGameDuration() {
     let timeDiff = ~~((currentDate - startDate) / 1000);
     let minutes = ~~(timeDiff / 60);
     let seconds = timeDiff % 60;
-    date.textContent = `${minutes.toString().padStart(2, "0")}:${seconds
+    date.textContent = `${minutes.toString().padStart(2, '0')}:${seconds
       .toString()
-      .padStart(2, "0")}`;
+      .padStart(2, '0')}`;
   }
 }
 
@@ -112,29 +110,29 @@ function createPrimaryPlayField() {
 }
 
 function drawPlayField() {
-  playingField.innerHTML = "";
-  const table = document.createElement("table");
-  table.setAttribute("class", "table-boxes");
+  playingField.innerHTML = '';
+  const table = document.createElement('table');
+  table.setAttribute('class', 'table-boxes');
   for (let i = 0; i < column; i++) {
-    const tr = document.createElement("tr");
+    const tr = document.createElement('tr');
     for (let j = 0; j < row; j++) {
-      const td = document.createElement("td");
-      td.setAttribute("class", "rows-boxes change");
-      if (themeToggle.classList.contains("dark")) td.classList.add("dark");
-      tr.appendChild(td);
+      const td = document.createElement('td');
+      td.setAttribute('class', 'rows-boxes change');
+      if (themeToggle.classList.contains('dark')) td.classList.add('dark');
+      tr.append(td);
     }
-    table.appendChild(tr);
+    table.append(tr);
   }
-  playingField.appendChild(table);
+  playingField.append(table);
 }
 
 function drawMine() {
-  const table = document.querySelector(".table-boxes");
+  const table = document.querySelector('.table-boxes');
   for (let x = 0; x < row; x++) {
     for (let y = 0; y < column; y++) {
       let td = table.rows[y].children[x];
       if (playField[x][y].isMine) {
-        td.classList.add("mine");
+        td.classList.add('mine');
       }
     }
   }
@@ -178,23 +176,23 @@ function countAllCells() {
 }
 
 function drawNumbers() {
-  const td = document.querySelectorAll("td");
+  const td = document.querySelectorAll('td');
   td.forEach((cell) => {
     switch (cell.textContent) {
-      case "1":
-        cell.classList.add("one");
+      case '1':
+        cell.classList.add('one');
         break;
-      case "2":
-        cell.classList.add("two");
+      case '2':
+        cell.classList.add('two');
         break;
-      case "3":
-        cell.classList.add("three");
+      case '3':
+        cell.classList.add('three');
         break;
-      case "4":
-        cell.classList.add("four");
+      case '4':
+        cell.classList.add('four');
         break;
-      case "5":
-        cell.classList.add("five");
+      case '5':
+        cell.classList.add('five');
         break;
     }
   });
@@ -209,7 +207,7 @@ function openAllCells(event) {
 }
 
 function audioPlay(elem) {
-  if (!mike.classList.contains("off")) {
+  if (!mike.classList.contains('off')) {
     elem.play();
   } else {
     elem.pause();
@@ -217,54 +215,57 @@ function audioPlay(elem) {
 }
 
 function toggleMute() {
-  if (mike.classList.contains("off")) {
+  if (mike.classList.contains('off')) {
     audioMyMine.pause();
     audioLost.pause();
     audiOpened.pause();
     audioWin.pause();
   } else {
-    if (textFooter.textContent === "You lost!!!") audioLost.play();
-    if (textFooter.textContent === "Greeting!!! You win!!!") audioWin.play();
+    if (textFooter.textContent === 'You lost!!!') audioLost.play();
+    if (textFooter.textContent === 'Greeting!!! You win!!!') audioWin.play();
   }
 }
 
-mike.addEventListener("click", () => {
-  mike.classList.toggle("off");
+mike.addEventListener('click', () => {
+  mike.classList.toggle('off');
   toggleMute();
-  mikeFlag = !mike.classList.contains("off") ? true : false;
+  mikeFlag = !mike.classList.contains('off') ? true : false;
   setLocalStorage();
 });
 
 function recurseOpenCells(x, y) {
-  const table = document.querySelector(".table-boxes");
+  const table = document.querySelector('.table-boxes');
   let td = table.rows[y].children[x];
   if (playField[x][y].isOpen) return;
   if (playField[x][y].isMine) {
-    td.classList.add("mine");
+    td.classList.add('mine');
     drawMine();
-    textFooter.textContent = "You lost!!!";
+    textFooter.textContent = 'You lost!!!';
     gameOver = true;
     flag = false;
-    mouth.style.animation = "mouth 1s infinite";
+    mouth.style.animation = 'mouth 1s infinite';
     audioPlay(audioLost);
+    getGameDuration(date.textContent);
   } else {
-    if (playField[x][y].nearMine == 0) td.innerHTML = "";
+    if (playField[x][y].nearMine == 0) td.innerHTML = '';
     else {
       td.innerHTML = playField[x][y].nearMine;
     }
     playField[x][y].isOpen = true;
-    td.classList.add("opened");
+    td.classList.add('opened');
+    td.classList.remove('my-mine');
     audioPlay(audiOpened);
     countOpened++;
     if (row * column - countMines == countOpened) {
-      textFooter.textContent = "Greeting!!! You win!!!";
+      textFooter.textContent = 'Greeting!!! You win!!!';
       flag = false;
       gameOver = true;
       drawMine();
       audioPlay(audioWin);
-      eyeLeft.style.animation = "eye 1s infinite";
-      eyeRight.style.animation = "eye 1s infinite";
-      mouth.style.animation = "mouth 1s infinite";
+      eyeLeft.style.animation = 'eye 1s infinite';
+      eyeRight.style.animation = 'eye 1s infinite';
+      mouth.style.animation = 'mouth 1s infinite';
+      getGameDuration(date.textContent);
     }
 
     if (playField[x][y].nearMine == 0) {
@@ -282,20 +283,20 @@ function recurseOpenCells(x, y) {
   }
 }
 
-playingField.addEventListener("click", function (event) {
+playingField.addEventListener('click', function (event) {
   pointClicks.textContent = ++countClicks;
   flag = true;
   if (!isFirstClickDone) {
     startDate = new Date();
     setInterval(updateGameDuration, 1000);
-    event.target.classList.add("opened");
+    event.target.classList.add('opened');
     let x = event.target.cellIndex;
     let y = event.target.parentNode.rowIndex;
     placeMines(x, y);
     openAllCells(event);
     isFirstClickDone = true;
   } else {
-    if (event.target.matches("td") && !event.target.matches(".my-mine")) {
+    if (event.target.matches('td') && !event.target.matches('.my-mine')) {
       openAllCells(event);
     }
   }
@@ -303,24 +304,29 @@ playingField.addEventListener("click", function (event) {
 
 function pointMyMine(event) {
   if (gameOver) return;
-  const tdBoxes = document.querySelectorAll(".rows-boxes");
+  const tdBoxes = document.querySelectorAll('.rows-boxes');
   let x = event.target.cellIndex;
   let y = event.target.parentNode.rowIndex;
   if (playField[x][y].isOpen) return;
-  const isMyMine = event.target.classList.toggle("my-mine");
+  event.target.classList.toggle('my-mine');
   const myMineCells = Array.from(tdBoxes).filter((box) =>
-    box.classList.contains("my-mine")
+    box.classList.contains('my-mine')
   );
 
   minesLeft = countMines - myMineCells.length;
-  pointBombs.innerText = minesLeft;
+  if (minesLeft >= 0) {
+    pointBombs.innerText = minesLeft;
+  } else {
+    pointBombs.innerText = 0;
+    event.target.classList.remove('my-mine');
+  }
 }
 
-playingField.addEventListener("contextmenu", function (event) {
+playingField.addEventListener('contextmenu', function (event) {
   flag = true;
   event.preventDefault();
   audioPlay(audioMyMine);
-  if (event.target.matches("td")) {
+  if (event.target.matches('td')) {
     pointMyMine(event);
   }
 });
@@ -329,89 +335,88 @@ function startGame() {
   countOpened = 0;
   createPrimaryPlayField();
   drawPlayField();
-  textFooter.textContent = "Good Luck!!!";
+  textFooter.textContent = 'Good Luck!!!';
 }
 
 startGame();
 
 // theme toggle-----------------------------------------------------------------------------------------------------------------------------
 function getThemeToggle() {
-  themeToggle.addEventListener("click", () => {
-    const themeToggleElements = document.querySelectorAll(".change");
-    themeToggleElements.forEach((btn) => btn.classList.toggle("dark"));
-    themeFlag = themeToggle.classList.contains("dark") ? true : false;
+  themeToggle.addEventListener('click', () => {
+    const themeToggleElements = document.querySelectorAll('.change');
+    themeToggleElements.forEach((btn) => btn.classList.toggle('dark'));
+    themeFlag = themeToggle.classList.contains('dark') ? true : false;
     setLocalStorage();
   });
 }
 
 getThemeToggle();
 const scriptTag = document.querySelector('script[src="./index.js"]');
-document.body.appendChild(scriptTag);
+document.body.append(scriptTag);
 
 //reload game-------------------------------------------------------------------------------------------------------------------------
-smile.addEventListener("click", function () {
-  localStorage.clear();
+smile.addEventListener('click', function () {
   location.reload();
 });
 window.getComputedStyle(mouth);
 
 //save in localStorage-----------------------------------------------------------------------------------------------------------------
-let tenGameDuration = [];
+
 function setLocalStorage() {
-  localStorage.setItem("mike", mikeFlag);
-  localStorage.setItem("theme", themeFlag);
-  localStorage.setItem("level", selectedOption);
-  localStorage.setItem("gameDuration", gameDuration);
-  localStorage.setItem("duration", JSON.stringify(tenGameDuration));
-}
+  localStorage.setItem('mike', mikeFlag);
+  localStorage.setItem('theme', themeFlag);
+  localStorage.setItem('level', selectedOption);}
 
 function getLocalStorage() {
-  if (localStorage.getItem("gameDuration")) {
-    gameDuration = localStorage.getItem("gameDuration");
-    tenGameDuration.push(gameDuration);
-    console.log(tenGameDuration );
-    localStorage.setItem("duration", JSON.stringify(tenGameDuration));
-  }
-
-  if (localStorage.getItem("mike")) {
-    mikeFlag = localStorage.getItem("mike");
-    if (mikeFlag === "false") {
-      mike.classList.add("off");
+  if (localStorage.getItem('mike')) {
+    mikeFlag = localStorage.getItem('mike');
+    if (mikeFlag === 'false') {
+      mike.classList.add('off');
     } else {
-      mike.classList.remove("off");
+      mike.classList.remove('off');
     }
     toggleMute();
   }
 
-  if (localStorage.getItem("theme")) {
-    themeFlag = localStorage.getItem("theme");
-    const themeToggleElements = document.querySelectorAll(".change");
-    if (themeFlag === "true") {
-      themeToggleElements.forEach((btn) => btn.classList.add("dark"));
+  if (localStorage.getItem('theme')) {
+    themeFlag = localStorage.getItem('theme');
+    const themeToggleElements = document.querySelectorAll('.change');
+    if (themeFlag === 'true') {
+      themeToggleElements.forEach((btn) => btn.classList.add('dark'));
     } else {
-      themeToggleElements.forEach((btn) => btn.classList.remove("dark"));
+      themeToggleElements.forEach((btn) => btn.classList.remove('dark'));
     }
   }
 
-  if (localStorage.getItem("level")) {
-    let selected = localStorage.getItem("level");
+  if (localStorage.getItem('level')) {
+    let selected = localStorage.getItem('level');
     getLevel(selected);
     getSelectedOption(selectedOption);
     startGame();
   }
+}
+const durationKey = 'duration';
+const storedDurations = localStorage.getItem(durationKey);
+const tenGameDuration = storedDurations ? JSON.parse(storedDurations) : [];
 
-  if (localStorage.getItem("duration")) {
-    const durationJSON = localStorage.getItem("duration");
-    tenGameDuration = JSON.parse(durationJSON);
+function getGameDuration(duration) {
+  tenGameDuration.push(duration);
+  if (tenGameDuration.length > 10) {
+    tenGameDuration.shift(); 
   }
-
+  localStorage.setItem(durationKey, JSON.stringify(tenGameDuration));
+  createStatistic(tenGameDuration)
 }
 
-function getGameDuration(data) {
-  tenGameDuration.push(data);
-  localStorage.setItem("duration", JSON.stringify(tenGameDuration));
-  console.log(tenGameDuration );
+function createStatistic(tenGameDuration) {
+    gameDurationStat.textContent='Game statistics:';
+    gameDurationStat.setAttribute("class", "stat-block");
+  for (let i = 0; i < tenGameDuration.length; i++) {
+    const time = document.createElement('li');
+    time.textContent=tenGameDuration[i];
+    gameDurationStat.append(time);
+  }
 }
 
-window.addEventListener("load", getLocalStorage);
-window.addEventListener("beforeunload", setLocalStorage);
+window.addEventListener('load', getLocalStorage);
+window.addEventListener('beforeunload', setLocalStorage);

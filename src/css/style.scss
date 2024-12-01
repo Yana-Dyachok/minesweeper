@@ -1,13 +1,3 @@
-@font-face {
-  font-family: "Georgia Regular";
-  src: url("../fonts/georgiab.ttf");
-}
-
-@font-face {
-  font-family: "Arial bold";
-  src: url("../fonts/ARIALBD.TTF");
-}
-
 * {
   padding: 0;
   margin: 0;
@@ -67,7 +57,6 @@ html {
 
 .wrapper {
   @include position(column);
-  font-family: "Georgia Regular";
   font-weight: 400;
   font-size: 2rem;
 }
