@@ -13,4 +13,5 @@ In the game, mines are scattered throughout a board, which is divided into cells
 
 ## [Deployment](https://yana-dyachok.github.io/minesweeper/)
 ![mi](https://github.com/user-attachments/assets/59b50837-9fcc-4423-9aa7-f70ed2b6df8e)
-![k](https://github.com/user-attachments/assets/d58cc32f-4a02-43f2-a13a-d7d1783b6123)
+![l](https://github.com/user-attachments/assets/fbed9fdb-b49d-4341-9965-ff1133400450)
+
