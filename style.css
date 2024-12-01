@@ -1,17 +1,10 @@
-@font-face {
-  font-family: "Georgia Regular";
-  src: url("../fonts/georgiab.ttf");
-}
-@font-face {
-  font-family: "Arial bold";
-  src: url("../fonts/ARIALBD.TTF");
-}
 * {
   padding: 0;
   margin: 0;
   border: 0;
 }
-*:before, *:after {
+*:before,
+*:after {
   box-sizing: border-box;
 }
 
@@ -24,7 +17,8 @@ a {
   text-decoration: none;
   color: inherit;
 }
-a:focus, a:active {
+a:focus,
+a:active {
   outline: none;
 }
 
@@ -137,7 +131,8 @@ html {
   cursor: pointer;
 }
 .theme-toggle.dark {
-  background: url("./assets/img/42647firstquartermoonface_98997 (1).png") center/cover no-repeat;
+  background: url("./assets/img/42647firstquartermoonface_98997 (1).png")
+    center/cover no-repeat;
 }
 
 .smiley-face {
@@ -211,17 +206,21 @@ html {
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
-  background: url("./assets/img/1491313954-volume-max_82980.svg") center/cover no-repeat;
+  background: url("./assets/img/1491313954-volume-max_82980.svg") center/cover
+    no-repeat;
   cursor: pointer;
 }
 .mike.dark {
-  background: url("./assets/img/1486485571-198high-loud-music-on-sound-speaker-volume_81180.svg") center/cover no-repeat;
+  background: url("./assets/img/1486485571-198high-loud-music-on-sound-speaker-volume_81180.svg")
+    center/cover no-repeat;
 }
 .mike.off {
-  background: url("./assets/img/1491313948-volume-mute_82994.svg") center/cover no-repeat;
+  background: url("./assets/img/1491313948-volume-mute_82994.svg") center/cover
+    no-repeat;
 }
 .mike.off.dark {
-  background: url("./assets/img/1486506271-music-mute-sound-volume-speaker-audio-player_81465.svg") center/cover no-repeat;
+  background: url("./assets/img/1486506271-music-mute-sound-volume-speaker-audio-player_81465.svg")
+    center/cover no-repeat;
 }
 
 main {
@@ -319,12 +318,20 @@ main {
 }
 
 .my-mine {
-  background: url('./assets/img/Flag-green256_25053.png') center/cover no-repeat;
+  background: url("./assets/img/Flag-green256_25053.png") center/cover no-repeat;
 }
 
 .flag {
-  background: url('./assets/img/Flag-green256_25053.png') no-repeat;
+  background: url("./assets/img/Flag-green256_25053.png") no-repeat;
   width: 3.5rem;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
 }
 
 .text-footer {
@@ -332,6 +339,17 @@ main {
 }
 .text-footer.dark {
   color: #da4b4b;
+}
+
+.stat-block {
+  position: absolute;
+  top: 50%;
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  font-size: 1rem;
+  color: white;
+  background-color: rgba(15, 21, 15, 0.3);
 }
 
 @media (max-width: 650px) {
@@ -355,4 +373,4 @@ main {
     width: 0.5rem;
     height: 0.5rem;
   }
-}/*# sourceMappingURL=style.css.map */
+} /*# sourceMappingURL=style.css.map */
