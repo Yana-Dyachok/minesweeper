@@ -348,7 +348,7 @@ main {
   display: flex;
   gap: 1rem;
   font-size: 1rem;
-  color: white;
+  color: #ffffff;
   background-color: rgba(15, 21, 15, 0.3);
 }
 
